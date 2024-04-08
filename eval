@@ -1,0 +1,36 @@
+% Define eval_expr predicate
+eval_expr(Tree, Env, Result) :-
+    eval(Tree, Env, Result).
+
+% Define evaluation rules for different types of expressions
+eval(number(N), _, N).
+
+eval(variable(Var), Env, Value) :-
+    lookup(Var, Env, Value).
+
+eval(plus(Left, Right), Env, Result) :-
+    eval(Left, Env, LeftResult),
+    eval(Right, Env, RightResult),
+    Result is LeftResult + RightResult.
+
+eval(minus(Left, Right), Env, Result) :-
+    eval(Left, Env, LeftResult),
+    eval(Right, Env, RightResult),
+    Result is LeftResult - RightResult.
+
+% Define lookup predicate to retrieve variable value from environment
+lookup(Var, [(Var, Value) | _], Value).
+lookup(Var, [_ | T], Value) :-
+    lookup(Var, T, Value).
+
+
+% Define example environment
+example_env([ (x, 5), (y, 10) ]).
+
+% Define example parse tree
+example_tree(plus(number(3), variable(x))).
+
+% Call eval_expr/3 with the example parse tree and environment
+%?- example_env(Env), example_tree(Tree), eval_expr(Tree, Env, Result).
+
+% example_env(Env), example_tree(Tree), eval_expr(Tree, Env, Result).
