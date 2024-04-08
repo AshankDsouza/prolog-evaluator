@@ -45,4 +45,19 @@ expr(Tree) --> variable(Tree).
 % expr(Tree, [3, '+', 5], []).
 % expr(Tree, [3, '-', 2, '+', 1], []).
 
+% Define eval_expr predicate
+eval_expr(Tree, Env, Result) :-
+    eval(Tree, Env, Result).
+
+% Define evaluation rules for different types of expressions
+eval(number(N), _, N).
+
+eval(variable(Var), Env, Value) :-
+    lookup(Var, Env, Value).
+
+
+% Define lookup predicate to retrieve variable value from environment
+lookup(Var, [(Var, Value) | _], Value).
+lookup(Var, [_ | T], Value) :-
+    lookup(Var, T, Value).
 
