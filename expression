@@ -44,7 +44,13 @@ expr(plus(Var,  E)) --> variable(Var), ['+'], expr(E).
 expr(plus(Num,  E)) --> number(Num), ['+'], expr(E).
 
 
+% E ::= E - E  | I | N
+% E :: = I - E | N - E | I | N
+% Beta ::= I | N | E
+% Alpha ::= + E | epsilon
 
+expr(minus(Var,  E)) --> variable(Var), ['-'], expr(E).
+expr(minus(Num,  E)) --> number(Num), ['-'], expr(E).
 
 
 % Define DCG rule for parsing expressions
@@ -77,6 +83,10 @@ eval(plus(Left, Right), Env, Result) :-
     eval(Right, Env, RightResult),
     Result is LeftResult + RightResult.
 
+eval(minus(Left, Right), Env, Result) :-
+    eval(Left, Env, LeftResult),
+    eval(Right, Env, RightResult),
+    Result is LeftResult - RightResult.
 
 % Define lookup predicate to retrieve variable value from environment
 lookup(Var, [(Var, Value) | _], Value).
