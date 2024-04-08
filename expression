@@ -59,6 +59,12 @@ expr(minus(Num,  E)) --> number(Num), ['-'], expr(E).
 expr(mult(Var,  E)) --> variable(Var), ['*'], expr(E).
 expr(mult(Num,  E)) --> number(Num), ['*'], expr(E).
 
+% E ::= E / E
+% E :: = I / E | N / E | I | N
+
+expr(div(Var,  E)) --> variable(Var), ['/'], expr(E).
+expr(div(Num,  E)) --> number(Num), ['/'], expr(E).
+
 
 % Define DCG rule for parsing expressions
 
@@ -99,6 +105,11 @@ eval(mult(Left, Right), Env, Result) :-
     eval(Left, Env, LeftResult),
     eval(Right, Env, RightResult),
     Result is LeftResult * RightResult.
+
+eval(div(Left, Right), Env, Result) :-
+    eval(Left, Env, LeftResult),
+    eval(Right, Env, RightResult),
+    Result is LeftResult / RightResult.
 
 % Define lookup predicate to retrieve variable value from environment
 lookup(Var, [(Var, Value) | _], Value).
