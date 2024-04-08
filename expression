@@ -15,7 +15,7 @@
 number([0]) --> [0].
 number([1]) --> [1].
 number([2]) --> [2].
-number([3]) --> [3].
+number(number(3)) --> [3].
 number([4]) --> [4].
 number([5]) --> [5].
 number([6]) --> [6].
@@ -30,9 +30,20 @@ variable([u]) --> [u].
 variable([v]) --> [v].
 
 
+% E ::= E + E  | I | N
+% E :: = I + E | N + E | I | N
+% Beta ::= I | N | E
+% Alpha ::= + E | epsilon
 
-expr(Tree) --> number(Tree).
-expr(Tree) --> variable(Tree).
+
+
+
+expr(Num) --> number(Num).
+expr(Var) --> variable(Var).
+expr(plus(Var,  E)) --> variable(Var), ['+'], expr(E).
+expr(plus(Num,  E)) --> number(Num), ['+'], expr(E).
+
+
 
 
 
@@ -54,6 +65,17 @@ eval(number(N), _, N).
 
 eval(variable(Var), Env, Value) :-
     lookup(Var, Env, Value).
+
+% Define evaluation rules for different types of expressions
+eval(number(N), _, N).
+
+eval(variable(Var), Env, Value) :-
+    lookup(Var, Env, Value).
+
+eval(plus(Left, Right), Env, Result) :-
+    eval(Left, Env, LeftResult),
+    eval(Right, Env, RightResult),
+    Result is LeftResult + RightResult.
 
 
 % Define lookup predicate to retrieve variable value from environment
